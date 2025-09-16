@@ -1,0 +1,46 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<OfficeApp
+  xmlns="http://schemas.microsoft.com/office/appforoffice/1.1"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:type="MailApp">
+
+	<!-- 1) Identity -->
+	<Id>f3a7d9ee-5b2e-4c3a-9f0d-1c2e3b4a5d6e</Id>
+	<Version>1.0.0.7</Version>
+	<ProviderName>ESCORT AI</ProviderName>
+	<DefaultLocale>en-US</DefaultLocale>
+	<DisplayName DefaultValue="ESCORT AI Security Analytics"/>
+	<Description DefaultValue="Auto-label + manual analysis."/>
+
+	<!-- 2) Icons (HTTPS required) -->
+	<IconUrl DefaultValue="https://vinsreesivan.github.io/CybertheronAI/assets/icon-32.png"/>
+	<HighResolutionIconUrl DefaultValue="https://vinsreesivan.github.io/CybertheronAI/assets/icon-80.png"/>
+
+	<!-- 3) Host & permissions -->
+	<Hosts>
+		<Host Name="Mailbox"/>
+	</Hosts>
+	<Requirements>
+		<Sets DefaultMinVersion="1.10">
+			<Set Name="Mailbox"/>
+		</Sets>
+	</Requirements>
+	<Permissions>ReadWriteItem</Permissions>
+
+	<!-- 4) Taskpane entry for manual launch -->
+	<FormSettings>
+		<Form xsi:type="ItemRead">
+			<DesktopSettings>
+				<SourceLocation DefaultValue="https://vinsreesivan.github.io/CybertheronAI/taskpane.html"/>
+				<RequestedHeight>450</RequestedHeight>
+			</DesktopSettings>
+		</Form>
+	</FormSettings>
+
+	<!-- 5) Auto-launch rule -->
+	<Rule xsi:type="RuleCollection" Mode="Or">
+		<Rule xsi:type="ItemIs" ItemType="Message" FormType="Read"/>
+	</Rule>
+
+</OfficeApp>
+

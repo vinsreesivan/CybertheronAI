@@ -1,0 +1,1 @@
+﻿Office.onReady(()=>{document.getElementById("analyzeBtn").onclick=async()=>{const text=await new Promise(r=>Office.context.mailbox.item.body.getAsync("text",r=>r(r.value||"")));document.getElementById("results").innerText=text.toLowerCase().includes("urgent")?"⚠️ Phishing":"✅ OK";}});
