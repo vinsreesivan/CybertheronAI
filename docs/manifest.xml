@@ -4,7 +4,7 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:type="MailApp">
 
-	<!-- 1) Identity -->
+	<!-- Identity -->
 	<Id>f3a7d9ee-5b2e-4c3a-9f0d-1c2e3b4a5d6e</Id>
 	<Version>1.0.0.7</Version>
 	<ProviderName>ESCORT AI</ProviderName>
@@ -12,11 +12,11 @@
 	<DisplayName DefaultValue="ESCORT AI Security Analytics"/>
 	<Description DefaultValue="Auto-label + manual analysis."/>
 
-	<!-- 2) Icons (HTTPS required) -->
-	<IconUrl DefaultValue="https://vinsreesivan.github.io/CybertheronAI/assets/icon-32.png"/>
-	<HighResolutionIconUrl DefaultValue="https://vinsreesivan.github.io/CybertheronAI/assets/icon-80.png"/>
+	<!-- Icons (HTTPS) -->
+	<IconUrl DefaultValue="https://raw.githubusercontent.com/vinsreesivan/CybertheronAI/main/docs/assets/icon-32.png"/>
+	<HighResolutionIconUrl DefaultValue="https://raw.githubusercontent.com/vinsreesivan/CybertheronAI/main/docs/assets/icon-80.png"/>
 
-	<!-- 3) Host & permissions -->
+	<!-- Host & permissions -->
 	<Hosts>
 		<Host Name="Mailbox"/>
 	</Hosts>
@@ -27,20 +27,19 @@
 	</Requirements>
 	<Permissions>ReadWriteItem</Permissions>
 
-	<!-- 4) Taskpane entry for manual launch -->
+	<!-- Taskpane entry -->
 	<FormSettings>
 		<Form xsi:type="ItemRead">
 			<DesktopSettings>
-				<SourceLocation DefaultValue="https://vinsreesivan.github.io/CybertheronAI/taskpane.html"/>
+				<SourceLocation DefaultValue="https://raw.githubusercontent.com/vinsreesivan/CybertheronAI/main/docs/taskpane.html"/>
 				<RequestedHeight>450</RequestedHeight>
 			</DesktopSettings>
 		</Form>
 	</FormSettings>
 
-	<!-- 5) Auto-launch rule -->
+	<!-- Auto-run on read -->
 	<Rule xsi:type="RuleCollection" Mode="Or">
 		<Rule xsi:type="ItemIs" ItemType="Message" FormType="Read"/>
 	</Rule>
 
 </OfficeApp>
-
