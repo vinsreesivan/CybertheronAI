@@ -1,0 +1,54 @@
+# Multi-LLM Fusion Configuration
+
+# List of models to query (ensure these are pulled in Ollama)
+# Recommended: Use 2-4 diverse models for best fusion results
+models:
+  # Fast general models - good for diverse perspectives
+  - name: "llama3.2:3b"
+    weight: 1.0
+    enabled: true
+  - name: "qwen3:4b"
+    weight: 1.0
+    enabled: true
+  - name: "gemma3:12b"
+    weight: 1.0
+    enabled: true
+
+  # Specialized models (enable based on your use case)
+  # - name: "qwen3-coder:latest"        # Best for coding questions
+  #   weight: 1.0
+  #   enabled: false
+  # - name: "hf.co/fdtn-ai/Foundation-Sec-8B-Instruct-Q8_0-GGUF:Q8_0"  # Security-focused
+  #   weight: 1.0
+  #   enabled: false
+  # - name: "hf.co/AlicanKiraz0/Cybersecurity-BaronLLM_Offensive_Security_LLM_Q6_K_GGUF:latest"  # Offensive security
+  #   weight: 1.0
+  #   enabled: false
+  # - name: "gpt-oss:20b"               # Larger general model
+  #   weight: 1.0
+  #   enabled: false
+  # - name: "legraphista/Orpheus:latest"
+  #   weight: 1.0
+  #   enabled: false
+
+# Refiner model - used to synthesize final output from all model responses
+# This should be your most capable model
+# Options: "llama4:16x17b" (best but slow), "gemma3:12b" (balanced), "gpt-oss:20b"
+refiner_model: "gemma3:12b"
+
+# Fusion strategy: "refiner" or "consensus"
+# - refiner: Uses refiner_model to create a synthesized answer (recommended)
+# - consensus: Simple majority voting (works best for factual questions)
+fusion_strategy: "refiner"
+
+# Server configuration
+server:
+  host: "0.0.0.0"
+  port: 8000
+  ollama_base_url: "http://localhost:11502"  # Updated to match your Ollama port
+
+# Generation parameters
+generation:
+  temperature: 0.7
+  max_tokens: 2000
+  timeout: 60
