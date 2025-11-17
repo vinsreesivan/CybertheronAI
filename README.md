@@ -20,6 +20,7 @@ Perfect for research, coding, creative writing, or any task where diverse AI per
 
 - ⚡ **Parallel Processing** - Query all models simultaneously
 - 🧠 **Intelligent Fusion** - AI-powered synthesis of responses
+- 🐛 **Auto-Debug Code** - Execute Python code with automatic error fixing
 - 🎨 **Beautiful UI** - Modern, responsive web interface
 - ⚙️ **Highly Configurable** - Easy YAML configuration
 - 🔌 **REST API** - Full API for programmatic access
@@ -149,9 +150,32 @@ CybertheronAI/
 
 - **Research**: Get diverse perspectives on complex topics
 - **Coding**: Compare coding solutions from multiple models
+- **Auto-Debugging**: Execute code and let LLMs fix errors automatically
 - **Writing**: Synthesize creative ideas
 - **Fact-Checking**: Cross-reference answers
 - **Learning**: See different problem-solving approaches
+
+## 🐛 Auto-Debug Feature (NEW!)
+
+Execute Python code and let multiple LLMs automatically detect and fix errors!
+
+```bash
+# Terminal mode
+python auto_debug.py
+
+# Web UI mode
+# http://localhost:8000/code-editor
+```
+
+**How it works:**
+1. Write Python code
+2. Execute it
+3. If there's an error, LLMs analyze it
+4. LLMs propose a fix
+5. Code is re-executed automatically
+6. Repeats until success!
+
+See [AUTO_DEBUG_GUIDE.md](AUTO_DEBUG_GUIDE.md) for detailed usage.
 
 ## 🛠️ Advanced Features
 
@@ -171,6 +195,8 @@ models:
 
 - `GET /` - Web UI
 - `POST /query` - Query and fuse
+- `POST /execute` - Execute code with auto-debugging
+- `GET /code-editor` - Code editor UI
 - `GET /health` - Health check
 - `GET /config` - Current config
 - `GET /models` - List models

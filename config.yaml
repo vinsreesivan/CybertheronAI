@@ -13,6 +13,9 @@ models:
   - name: "gemma3:12b"
     weight: 1.0
     enabled: true
+  - name: "gpt-oss:20b"
+    weight: 1.0
+    enabled: true
 
   # Specialized models (enable based on your use case)
   # - name: "qwen3-coder:latest"        # Best for coding questions
@@ -22,9 +25,6 @@ models:
   #   weight: 1.0
   #   enabled: false
   # - name: "hf.co/AlicanKiraz0/Cybersecurity-BaronLLM_Offensive_Security_LLM_Q6_K_GGUF:latest"  # Offensive security
-  #   weight: 1.0
-  #   enabled: false
-  # - name: "gpt-oss:20b"               # Larger general model
   #   weight: 1.0
   #   enabled: false
   # - name: "legraphista/Orpheus:latest"
