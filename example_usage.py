@@ -13,7 +13,7 @@ from typing import Dict, Any
 class LLMFusionClient:
     """Simple client for the Multi-LLM Fusion API"""
 
-    def __init__(self, base_url: str = "http://localhost:8000"):
+    def __init__(self, base_url: str = "http://localhost:9876"):
         self.base_url = base_url
 
     def health_check(self) -> Dict[str, Any]:
@@ -124,7 +124,7 @@ def main():
 
     print()
     print("=" * 60)
-    print("Done! Check the API docs at http://localhost:8000/docs")
+    print("Done! Check the API docs at http://localhost:9876/docs")
     print("=" * 60)
 
 
