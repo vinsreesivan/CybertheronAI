@@ -1,0 +1,49 @@
+{
+  "enabled": true,
+  "providers": ["ollama", "chatgpt", "gemini", "claude", "n8n"],
+  "global_blocklist": [
+    "password",
+    "api key",
+    "secret key",
+    "private key",
+    "social security number",
+    "credit card",
+    "ssn"
+  ],
+  "categories": [
+    {
+      "id": "violence",
+      "title": "Violence & Harm",
+      "description": "Blocks weaponization, violence or self-harm instructions",
+      "patterns": ["weaponize", "bomb", "harm yourself", "kill"],
+      "action": "block"
+    },
+    {
+      "id": "illicit",
+      "title": "Illicit behavior",
+      "description": "Prevents illegal or copyright-infringing activity",
+      "patterns": ["illegal download", "pirated", "counterfeit", "steal"],
+      "action": "block"
+    },
+    {
+      "id": "pii",
+      "title": "PII Leakage",
+      "description": "Flags personal identifiable information requests",
+      "patterns": ["passport number", "driver's license", "address", "phone number"],
+      "action": "warn"
+    }
+  ],
+  "content_blocks": [
+    {
+      "id": "secrets",
+      "title": "Secrets & Credentials",
+      "description": "Prevents leaking tokens, keys and certs",
+      "patterns": ["BEGIN RSA PRIVATE KEY", "sk-", "ghp_"],
+      "action": "block"
+    }
+  ],
+  "response_policy": {
+    "inspect_outputs": true,
+    "on_output_violation": "warn"
+  }
+}

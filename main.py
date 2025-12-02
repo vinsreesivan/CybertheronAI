@@ -15,6 +15,7 @@ import asyncio
 import re
 from llm_fusion import LLMFusionEngine
 from code_executor import CodeExecutor, CodeExecutionResult
+from guard import LLMGuard
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -46,6 +47,7 @@ app.add_middleware(
 # Initialize fusion engine and code executor
 fusion_engine = LLMFusionEngine(config)
 code_executor = CodeExecutor(timeout=30)
+guard = LLMGuard(Path("guard_config.json"))
 
 
 # Request/Response models
@@ -64,6 +66,21 @@ class HealthResponse(BaseModel):
     status: str
     models: list
     fusion_strategy: str
+
+
+class GuardCheckRequest(BaseModel):
+    text: str
+    provider: str = "ollama"
+    direction: str = "prompt"
+
+
+class GuardConfigUpdate(BaseModel):
+    enabled: bool | None = None
+    providers: list | None = None
+    global_blocklist: list | None = None
+    categories: list | None = None
+    content_blocks: list | None = None
+    response_policy: dict | None = None
 
 
 @app.get("/", response_class=HTMLResponse)
@@ -89,7 +106,8 @@ async def health_check():
     return {
         "status": "healthy",
         "models": [m['name'] for m in config['models'] if m.get('enabled', True)],
-        "fusion_strategy": config.get('fusion_strategy', 'refiner')
+        "fusion_strategy": config.get('fusion_strategy', 'refiner'),
+        "guard_enabled": guard.get_config().get('enabled', False)
     }
 
 
@@ -104,6 +122,36 @@ async def get_config():
     }
 
 
+@app.get("/guard/config")
+async def get_guard_config():
+    """Expose current guardrail configuration for UI and automation (n8n)."""
+    return guard.get_config()
+
+
+@app.post("/guard/config")
+async def update_guard_config(payload: GuardConfigUpdate):
+    """Update guardrail settings including categories and content blocks."""
+    try:
+        updated = guard.update_config({k: v for k, v in payload.model_dump().items() if v is not None})
+        return updated
+    except Exception as e:
+        logger.error(f"Failed to update guard config: {e}")
+        raise HTTPException(status_code=400, detail=f"Failed to update guard config: {str(e)}")
+
+
+@app.post("/guard/check")
+async def check_guardrails(request: GuardCheckRequest):
+    """Run guardrails on any text; suitable for preflight checks or n8n."""
+    if not request.text or len(request.text.strip()) == 0:
+        raise HTTPException(status_code=400, detail="Text to inspect cannot be empty")
+
+    try:
+        return guard.check_text(request.text, provider=request.provider, direction=request.direction)
+    except Exception as e:
+        logger.error(f"Guard evaluation failed: {e}")
+        raise HTTPException(status_code=500, detail="Guard evaluation failed")
+
+
 @app.post("/query")
 async def query_llms(request: QueryRequest):
     """
@@ -112,7 +160,16 @@ async def query_llms(request: QueryRequest):
     if not request.prompt or len(request.prompt.strip()) == 0:
         raise HTTPException(status_code=400, detail="Prompt cannot be empty")
 
+    original_strategy = None
     try:
+        prompt_guard = guard.check_text(request.prompt, provider="fusion-gateway", direction="prompt")
+
+        if not prompt_guard.get("allowed", True):
+            raise HTTPException(status_code=403, detail={
+                "message": "Prompt blocked by guardrail policy",
+                "guardrail": prompt_guard
+            })
+
         # Override strategy if provided
         if request.strategy:
             original_strategy = fusion_engine.fusion_strategy
@@ -120,15 +177,34 @@ async def query_llms(request: QueryRequest):
 
         result = await fusion_engine.fuse_responses(request.prompt)
 
-        # Restore original strategy
-        if request.strategy:
-            fusion_engine.fusion_strategy = original_strategy
+        # Inspect fused output if enabled
+        output_guard = None
+        if guard.get_config().get("response_policy", {}).get("inspect_outputs", True):
+            output_guard = guard.check_text(
+                result.get("fused_response", ""),
+                provider="fusion-gateway",
+                direction="response"
+            )
+
+            if output_guard.get("action") == "block" and not output_guard.get("allowed", True):
+                raise HTTPException(status_code=403, detail={
+                    "message": "Fused response blocked by guardrail policy",
+                    "guardrail": output_guard
+                })
+
+        result["guardrail"] = {"prompt": prompt_guard, "response": output_guard}
 
         return result
-
+    except HTTPException:
+        # Re-raise HTTP errors untouched
+        raise
     except Exception as e:
         logger.error(f"Query failed: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Query failed: {str(e)}")
+    finally:
+        # Restore original strategy
+        if original_strategy is not None:
+            fusion_engine.fusion_strategy = original_strategy
 
 
 @app.get("/models")

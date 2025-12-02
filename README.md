@@ -25,6 +25,7 @@ Perfect for research, coding, creative writing, or any task where diverse AI per
 - ⚙️ **Highly Configurable** - Easy YAML configuration
 - 🔌 **REST API** - Full API for programmatic access
 - 📊 **Response Analytics** - Compare individual model outputs
+- 🛡️ **Guardrail Gateway** - Rule-based safety layer that filters prompts/responses for Ollama or commercial APIs
 
 ## 🚀 Quick Start
 
@@ -73,6 +74,15 @@ response = requests.post(
 result = response.json()
 print(result['fused_response'])
 ```
+
+### Guardrail Gateway & n8n
+
+The backend now exposes a dedicated guardrail layer that sits in front of every provider (Ollama, ChatGPT, Gemini, Claude) and can also be called directly from automation tools such as **n8n**.
+
+- **UI controls**: The homepage includes a *Guardrail Console* where you can toggle enforcement, add/remove categories, manage content blocks, and run preflight checks without hitting a model.
+- **Programmatic check**: `POST /guard/check` with `{ "text": "...", "provider": "ollama|chatgpt|gemini|claude|n8n", "direction": "prompt|response" }` to get an allow/warn/block verdict and matching rules. Perfect for an n8n HTTP node.
+- **Config updates**: `GET/POST /guard/config` lets you save categories, blocklists, and content blocks from the UI or automation.
+- **Inline enforcement**: `/query` rejects prompts or fused responses that violate *block* rules and returns guardrail metadata alongside model output.
 
 ### Command Line
 
