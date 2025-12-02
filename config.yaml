@@ -44,7 +44,7 @@ fusion_strategy: "refiner"
 # Server configuration
 server:
   host: "0.0.0.0"
-  port: 8000
+  port: 9876  # Uncommon port to avoid conflicts with other services
   ollama_base_url: "http://localhost:11502"  # Updated to match your Ollama port
 
 # Generation parameters

@@ -36,13 +36,13 @@ echo ""
 
 # Test 3: Check if server is running
 echo "Test 3: Checking if FastAPI server is running..."
-if curl -s http://localhost:8000/health > /dev/null 2>&1; then
-    echo -e "${GREEN}✅ Server is running on port 8000${NC}"
+if curl -s http://localhost:9876/health > /dev/null 2>&1; then
+    echo -e "${GREEN}✅ Server is running on port 9876${NC}"
 
     # Get health info
     echo ""
     echo "Server Health Info:"
-    curl -s http://localhost:8000/health | python3 -m json.tool
+    curl -s http://localhost:9876/health | python3 -m json.tool
     echo ""
 else
     echo -e "${YELLOW}⚠️  Server is not running${NC}"
@@ -56,7 +56,7 @@ echo "Test 4: Testing simple query..."
 echo "Sending test query: 'What is 2+2?'"
 echo ""
 
-RESPONSE=$(curl -s -X POST http://localhost:8000/query \
+RESPONSE=$(curl -s -X POST http://localhost:9876/query \
     -H "Content-Type: application/json" \
     -d '{"prompt": "What is 2+2? Answer in one sentence."}')
 
@@ -81,7 +81,7 @@ echo "Testing Complete!"
 echo "=========================================="
 echo ""
 echo "Next steps:"
-echo "  1. Open browser to: http://localhost:8000"
+echo "  1. Open browser to: http://localhost:9876"
 echo "  2. Try the web interface"
 echo "  3. Run example script: python example_usage.py"
 echo "  4. Switch presets: ./switch_preset.sh coding"
